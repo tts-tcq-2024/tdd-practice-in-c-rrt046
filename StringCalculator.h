@@ -7,6 +7,9 @@
 
 #define MAX_NUMBERS 1000
 
+// Function declaration to allocate memory for tokens array with error checking
+static char** allocate_token_array_with_check();
+
 // Helper function to throw exceptions for negative numbers
 static void throw_exception(const char* message, const int* negatives, int count) {
     printf("%s ", message);
