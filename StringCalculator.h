@@ -7,6 +7,7 @@
 
 #define MAX_NUMBERS 1000
 
+// Helper function to throw exceptions for negative numbers
 static void throw_exception(const char* message, const int* negatives, int count) {
     printf("%s ", message);
     for (int i = 0; i < count; i++) {
@@ -16,9 +17,20 @@ static void throw_exception(const char* message, const int* negatives, int count
     exit(1);
 }
 
+// Helper function to split the string by given delimiters
 static char** split_string(const char* str, const char* delimiters, int* count) {
     char* str_copy = strdup(str);
-    char** tokens = malloc(MAX_NUMBERS * sizeof(char*));
+    if (str_copy == NULL) {
+        perror("Memory allocation error");
+        exit(1);
+    }
+    
+    char** tokens = (char**) malloc(MAX_NUMBERS * sizeof(char*));
+    if (tokens == NULL) {
+        perror("Memory allocation error");
+        exit(1);
+    }
+
     char* token = strtok(str_copy, delimiters);
     int index = 0;
 
@@ -27,18 +39,21 @@ static char** split_string(const char* str, const char* delimiters, int* count) 
         token = strtok(NULL, delimiters);
     }
     *count = index;
+    free(str_copy); // Freeing the duplicated string after use
     return tokens;
 }
 
-
+// Function to validate if a number is negative
 static int is_negative(int num) {
     return num < 0;
 }
 
+// Function to validate if a number is within the range of 0 to 1000
 static int is_within_range(int num) {
     return num <= 1000;
 }
 
+// Function to parse custom delimiter from the string
 static const char* parse_custom_delimiter(const char* numbers, char* delimiters) {
     const char* num_start = numbers;
 
@@ -54,7 +69,8 @@ static const char* parse_custom_delimiter(const char* numbers, char* delimiters)
     return num_start;
 }
 
-int add(const char* numbers) {
+// Function to calculate the sum of numbers and handle exceptions
+int Add(const char* numbers) {
     if (strlen(numbers) == 0) {
         return 0;
     }
@@ -82,9 +98,8 @@ int add(const char* numbers) {
         throw_exception("negatives not allowed", negatives, neg_count);
     }
 
-    free(tokens);
+    free(tokens); // Freeing the allocated memory for tokens
     return sum;
 }
 
 #endif /* STRINGCALCULATOR_H */
-
