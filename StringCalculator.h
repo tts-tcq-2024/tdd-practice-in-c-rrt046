@@ -59,7 +59,10 @@ char parse_default_delimiter(const char *input) {
 
 // Function to parse numbers and calculate sum
 void parse_numbers(const char *input, char delimiter, int *sum) {
-    char *token, *rest = (char *) input;
+    char *token, *rest;
+    char *mutable_input = strdup(input); // Create a mutable copy of input
+
+    rest = mutable_input;
 
     while ((token = strtok_r(rest, "\n,", &rest)) != NULL) {
         int num = atoi(token);
@@ -67,11 +70,16 @@ void parse_numbers(const char *input, char delimiter, int *sum) {
             *sum += num;
         }
     }
+
+    free(mutable_input); // Free the dynamically allocated memory
 }
 
 // Function to handle negative numbers
 void handle_negatives(const char *input) {
-    char *token, *rest = (char *) input;
+    char *token, *rest;
+    char *mutable_input = strdup(input); // Create a mutable copy of input
+
+    rest = mutable_input;
 
     while ((token = strtok_r(rest, "\n,", &rest)) != NULL) {
         int num = atoi(token);
@@ -80,6 +88,8 @@ void handle_negatives(const char *input) {
             exit(1);
         }
     }
+
+    free(mutable_input); // Free the dynamically allocated memory
 }
 
 #endif // STRING_CALCULATOR_H
