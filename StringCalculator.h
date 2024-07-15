@@ -1,88 +1,74 @@
-#ifndef STRINGCALCULATOR_H
-#define STRINGCALCULATOR_H
+#ifndef STRING_CALCULATOR_H
+#define STRING_CALCULATOR_H
 
+#include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
+#include <ctype.h>
 
 // Function declarations
-int add(const char* input);
-const char* determineDelimiterAndMove(const char* input, char* delimiter);
-int extractNumbersAndSum(const char* input, char delimiter);
-int parseToken(const char* token, char delimiter);
-bool hasCustomDelimiter(const char* input, char* delimiter);
-const char* movePastCustomDelimiter(const char* input);
+int add(const char *input);
+char parse_delimiter(const char *input);
+void parse_numbers(const char *input, char delimiter, int *sum);
+void handle_negatives(const char *input);
 
-// Function to add numbers from a string input
-int add(const char* input) {
-    if (input == NULL || *input == '\0')
+// Function to add numbers as per StringCalculator requirements
+int add(const char *input) {
+    if (input == NULL || strlen(input) == 0)
         return 0;
 
-    char delimiter;
-    input = determineDelimiterAndMove(input, &delimiter);
-
-    return extractNumbersAndSum(input, delimiter);
-}
-
-// Helper function to determine the delimiter and adjust the input pointer
-const char* determineDelimiterAndMove(const char* input, char* delimiter) {
-    *delimiter = ',';
-    if (hasCustomDelimiter(input, delimiter)) {
-        input = movePastCustomDelimiter(input);
-    }
-    return input;
-}
-
-// Helper function to extract numbers from input and compute sum
-int extractNumbersAndSum(const char* input, char delimiter) {
+    char delimiter = parse_delimiter(input);
     int sum = 0;
-    char buffer[strlen(input) + 1];
-    strcpy(buffer, input);
-
-    // Use strtok to tokenize by delimiter (',' or custom delimiter)
-    char* token = strtok(buffer, ",\n");
-    while (token != NULL) {
-        int number = parseToken(token, delimiter);
-        if (number <= 1000) {
-            sum += number;
-        }
-        token = strtok(NULL, ",\n");
-    }
+    parse_numbers(input, delimiter, &sum);
+    handle_negatives(input);
 
     return sum;
 }
 
-// Helper function to parse a token and convert to integer
-int parseToken(const char* token, char delimiter) {
-    // Handle custom delimiter
-    if (*token == delimiter) {
-        token++;
+// Function to parse the delimiter from input string
+char parse_delimiter(const char *input) {
+    char delimiter = ',';
+    if (strncmp(input, "//", 2) == 0) {
+        const char *delimiter_start = strchr(input, '[');
+        if (delimiter_start != NULL) {
+            const char *delimiter_end = strchr(delimiter_start + 1, ']');
+            if (delimiter_end != NULL) {
+                int delimiter_length = delimiter_end - delimiter_start - 1;
+                char custom_delimiter[delimiter_length + 1];
+                strncpy(custom_delimiter, delimiter_start + 1, delimiter_length);
+                custom_delimiter[delimiter_length] = '\0';
+                delimiter = custom_delimiter[0];
+            }
+        } else {
+            delimiter = input[2];
+        }
     }
-
-    // Convert token to number
-    return atoi(token);
+    return delimiter;
 }
 
-// Helper function to check for custom delimiter
-bool hasCustomDelimiter(const char* input, char* delimiter) {
-    if (input[0] == '/' && input[1] == '/') {
-        *delimiter = input[2];
-        return true;
+// Function to parse numbers and calculate sum
+void parse_numbers(const char *input, char delimiter, int *sum) {
+    char *token, *rest = (char *) input;
+
+    while ((token = strtok_r(rest, "\n,", &rest)) != NULL) {
+        int num = atoi(token);
+        if (num <= 1000) {
+            *sum += num;
+        }
     }
-    return false;
 }
 
-// Helper function to move past the custom delimiter declaration
-const char* movePastCustomDelimiter(const char* input) {
-    // Move past '//'
-    input += 2;
+// Function to handle negative numbers
+void handle_negatives(const char *input) {
+    char *token, *rest = (char *) input;
 
-    // Move past the custom delimiter declaration and newline character
-    while (*input != '\n' && *input != '\0') {
-        input++;
+    while ((token = strtok_r(rest, "\n,", &rest)) != NULL) {
+        int num = atoi(token);
+        if (num < 0) {
+            fprintf(stderr, "negatives not allowed: %d\n", num);
+            exit(1);
+        }
     }
-
-    return input;
 }
 
-#endif // STRINGCALCULATOR_H
+#endif // STRING_CALCULATOR_H
