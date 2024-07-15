@@ -16,10 +16,8 @@ int add(const char* input) {
         return 0;
 
     char delimiter = ',';
-    if (input[0] == '/' && input[1] == '/') {
-        delimiter = input[2];
+    if (hasCustomDelimiter(input, &delimiter))
         input += 3; // Move past the custom delimiter declaration
-    }
 
     return extractNumbersAndSum(input, delimiter);
 }
@@ -39,6 +37,15 @@ int extractNumbersAndSum(const char* input, char delimiter) {
     }
 
     return sum;
+}
+
+// Helper function to check for custom delimiter
+bool hasCustomDelimiter(const char* input, char* delimiter) {
+    if (input[0] == '/' && input[1] == '/') {
+        *delimiter = input[2];
+        return true;
+    }
+    return false;
 }
 
 #endif // STRINGCALCULATOR_H
