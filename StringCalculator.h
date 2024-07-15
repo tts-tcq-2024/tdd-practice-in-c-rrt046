@@ -8,10 +8,27 @@
 #define MAX_NUMBERS 1000
 
 // Function declaration to allocate memory for tokens array with error checking
-static char** allocate_token_array_with_check();
+static char** allocate_token_array_with_check() {
+    char** tokens = (char**) malloc(MAX_NUMBERS * sizeof(char*));
+    if (tokens == NULL) {
+        perror("Memory allocation error");
+        exit(1);
+    }
+    return tokens;
+}
 
 // Function declaration to tokenize the string and count tokens internally
-static void tokenize_string_internal(char* str_copy, const char* delimiters, char** tokens, int* count);
+static void tokenize_string_internal(char* str_copy, const char* delimiters, char** tokens, int* count) {
+    char* token = strtok(str_copy, delimiters);
+    int index = 0;
+
+    while (token != NULL) {
+        tokens[index++] = token;
+        token = strtok(NULL, delimiters);
+    }
+
+    *count = index;
+}
 
 // Helper function to throw exceptions for negative numbers
 static void throw_exception(const char* message, const int* negatives, int count) {
@@ -56,29 +73,6 @@ static char** tokenize_string(const char* str, const char* delimiters, int* coun
     tokenize_string_internal(str_copy, delimiters, tokens, count);
 
     free(str_copy); // Freeing the duplicated string after use
-    return tokens;
-}
-
-// Internal function to tokenize the string and count tokens
-static void tokenize_string_internal(char* str_copy, const char* delimiters, char** tokens, int* count) {
-    char* token = strtok(str_copy, delimiters);
-    int index = 0;
-
-    while (token != NULL) {
-        tokens[index++] = token;
-        token = strtok(NULL, delimiters);
-    }
-
-    *count = index;
-}
-
-// Function to allocate memory for tokens array with error checking
-static char** allocate_token_array_with_check() {
-    char** tokens = (char**) malloc(MAX_NUMBERS * sizeof(char*));
-    if (tokens == NULL) {
-        perror("Memory allocation error");
-        exit(1);
-    }
     return tokens;
 }
 
