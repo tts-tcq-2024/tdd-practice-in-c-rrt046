@@ -9,6 +9,7 @@
 int add(const char* input);
 const char* determineDelimiterAndMove(const char* input, char* delimiter);
 int extractNumbersAndSum(const char* input, char delimiter);
+int parseToken(const char* token, char delimiter);
 bool hasCustomDelimiter(const char* input, char* delimiter);
 const char* movePastCustomDelimiter(const char* input);
 const char* skipNewline(const char* input);
@@ -42,22 +43,27 @@ int extractNumbersAndSum(const char* input, char delimiter) {
     // Use strtok to tokenize by delimiter (',' or custom delimiter)
     char* token = strtok(buffer, ",");
     while (token != NULL) {
-        // Check if token starts with newline
-        if (*token == '\n') {
-            token++;
-        }
-
-        // Convert token to number
-        int number = atoi(token);
-        if (number <= 1000) {
-            sum += number;
-        }
-
-        // Move to the next token
+        sum += parseToken(token, delimiter);
         token = strtok(NULL, ",");
     }
 
     return sum;
+}
+
+// Helper function to parse a token and convert to integer
+int parseToken(const char* token, char delimiter) {
+    // Skip leading newline character if present
+    if (*token == '\n') {
+        token++;
+    }
+
+    // Handle custom delimiter
+    if (*token == delimiter) {
+        token++;
+    }
+
+    // Convert token to number
+    return atoi(token);
 }
 
 // Helper function to check for custom delimiter
@@ -87,7 +93,7 @@ const char* movePastCustomDelimiter(const char* input) {
 
 // Helper function to skip newline character if it exists
 const char* skipNewline(const char* input) {
-    if (*input == '\n') {
+    while (*input != '\n' && *input != '\0') {
         input++;
     }
     return input;
