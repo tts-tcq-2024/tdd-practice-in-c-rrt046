@@ -118,13 +118,20 @@ int add(const char* numbers) {
     const char* num_start = parse_custom_delimiter(numbers, delimiters);
 
     int count;
-    char** tokens = allocate_token_array_with_check();
-    if (tokens == NULL) {
+    char* num_start_copy = strdup(num_start); // Duplicate string for safe tokenization
+    if (num_start_copy == NULL) {
         perror("Memory allocation error");
         exit(1);
     }
 
-    tokenize_string_internal(strdup(num_start), delimiters, tokens, &count);
+    char** tokens = allocate_token_array_with_check();
+    if (tokens == NULL) {
+        perror("Memory allocation error");
+        free(num_start_copy); // Free the duplicated string on error
+        exit(1);
+    }
+
+    tokenize_string_internal(num_start_copy, delimiters, tokens, &count);
 
     int negatives[MAX_NUMBERS];
     int neg_count = 0;
@@ -136,6 +143,7 @@ int add(const char* numbers) {
     }
 
     free(tokens); // Freeing the allocated memory for tokens
+    free(num_start_copy); // Freeing the duplicated string
     return sum;
 }
 
