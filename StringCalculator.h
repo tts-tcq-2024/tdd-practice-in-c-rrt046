@@ -66,7 +66,7 @@ const char* movePastCustomDelimiter(const char* input) {
     input += 2;
 
     // Move past the custom delimiter declaration and newline character
-   skipNewline(input);
+   input=skipNewline(input);
 
     // Move past newline character if it exists
     if (*input == '\n') {
