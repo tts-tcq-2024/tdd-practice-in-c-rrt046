@@ -11,6 +11,7 @@ const char* determineDelimiterAndMove(const char* input, char* delimiter);
 int extractNumbersAndSum(const char* input, char delimiter);
 bool hasCustomDelimiter(const char* input, char* delimiter);
 const char* movePastCustomDelimiter(const char* input);
+const char* skipNewline(const char* input);
 
 // Function to add numbers from a string input
 int add(const char* input) {
@@ -64,16 +65,22 @@ const char* movePastCustomDelimiter(const char* input) {
     // Move past '//'
     input += 2;
 
-    // Move past the custom delimiter
+    // Skip until newline or end of string
     while (*input != '\n' && *input != '\0') {
         input++;
     }
 
     // Move past newline character if it exists
+    input = skipNewline(input);
+
+    return input;
+}
+
+// Helper function to skip newline character if it exists
+const char* skipNewline(const char* input) {
     if (*input == '\n') {
         input++;
     }
-
     return input;
 }
 
