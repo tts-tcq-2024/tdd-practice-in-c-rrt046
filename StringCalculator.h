@@ -11,7 +11,6 @@ const char* determineDelimiterAndMove(const char* input, char* delimiter);
 int extractNumbersAndSum(const char* input, char delimiter);
 bool hasCustomDelimiter(const char* input, char* delimiter);
 const char* movePastCustomDelimiter(const char* input);
-const char* skipNewline(const char* input);
 
 // Function to add numbers from a string input
 int add(const char* input) {
@@ -39,13 +38,13 @@ int extractNumbersAndSum(const char* input, char delimiter) {
     char buffer[strlen(input) + 1];
     strcpy(buffer, input);
 
-    // Tokenize using the custom delimiter
-    char* token = strtok(buffer, &delimiter);
+    // Use strtok to tokenize by ',' and '\n'
+    char* token = strtok(buffer, ",\n");
     while (token != NULL) {
         int number = atoi(token);
         if (number <= 1000)
             sum += number;
-        token = strtok(NULL, &delimiter);
+        token = strtok(NULL, ",\n");
     }
 
     return sum;
@@ -65,22 +64,16 @@ const char* movePastCustomDelimiter(const char* input) {
     // Move past '//'
     input += 2;
 
-    // Skip until newline or end of string
+    // Move past the custom delimiter
     while (*input != '\n' && *input != '\0') {
         input++;
     }
 
     // Move past newline character if it exists
-    input = skipNewline(input);
-
-    return input;
-}
-
-// Helper function to skip newline character if it exists
-const char* skipNewline(const char* input) {
     if (*input == '\n') {
         input++;
     }
+
     return input;
 }
 
