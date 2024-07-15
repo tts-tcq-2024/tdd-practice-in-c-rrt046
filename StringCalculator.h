@@ -7,6 +7,7 @@ int add(const char *input);
 char parse_delimiter(const char *input);
 void parse_numbers(const char *input, char delimiter, int *sum);
 void process_tokens(char *rest, char delimiter, int *sum);
+void handle_negatives(const char *input);
 
 // Function to add numbers as per StringCalculator requirements
 int add(const char *input) {
