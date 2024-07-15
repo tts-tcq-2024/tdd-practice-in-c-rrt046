@@ -11,6 +11,7 @@ int add(const char *input);
 char parse_delimiter(const char *input);
 char parse_custom_delimiter(const char *input);
 char parse_default_delimiter(const char *input);
+void parse_and_sum_numbers(char *token, int *sum);
 void parse_numbers(const char *input, char delimiter, int *sum);
 void handle_negatives(const char *input);
 
@@ -57,12 +58,19 @@ char parse_default_delimiter(const char *input) {
     return input[2];
 }
 
+// Function to parse numbers from tokenized input and calculate sum
+void parse_and_sum_numbers(char *token, int *sum) {
+    int num = atoi(token);
+    if (num <= 1000) {
+        *sum += num;
+    }
+}
+
 // Function to parse numbers and calculate sum
 void parse_numbers(const char *input, char delimiter, int *sum) {
-    char *token, *rest;
     char *mutable_input = strdup(input); // Create a mutable copy of input
-
-    rest = mutable_input;
+    char *rest = mutable_input;
+    char *token;
 
     // Skip the optional delimiter definition line if present
     if (strncmp(rest, "//", 2) == 0) {
@@ -71,10 +79,7 @@ void parse_numbers(const char *input, char delimiter, int *sum) {
 
     // Tokenize the rest of the string using the specified delimiter
     while ((token = strtok_r(rest, &delimiter, &rest)) != NULL) {
-        int num = atoi(token);
-        if (num <= 1000) {
-            *sum += num;
-        }
+        parse_and_sum_numbers(token, sum);
     }
 
     free(mutable_input); // Free the dynamically allocated memory
