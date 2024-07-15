@@ -16,12 +16,19 @@ int add(const char* input) {
     if (input == NULL || *input == '\0')
         return 0;
 
-    char delimiter = ',';
-    if (hasCustomDelimiter(input, &delimiter)) {
-        input = movePastCustomDelimiter(input);
-    }
+    char delimiter;
+    const char* adjustedInput = determineDelimiterAndMove(input, &delimiter);
 
-    return extractNumbersAndSum(input, delimiter);
+    return extractNumbersAndSum(adjustedInput, delimiter);
+}
+
+// Helper function to determine the delimiter and adjust the input pointer
+const char* determineDelimiterAndMove(const char* input, char* delimiter) {
+    *delimiter = ',';
+    if (hasCustomDelimiter(input, delimiter)) {
+        return movePastCustomDelimiter(input);
+    }
+    return input;
 }
 
 // Helper function to extract numbers from input and compute sum
