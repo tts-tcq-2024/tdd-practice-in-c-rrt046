@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 
 // Function declarations
 int add(const char *input);
@@ -43,7 +42,7 @@ void parse_numbers(const char *input, char delimiter, int *sum) {
     }
 
     // Tokenize the rest of the string using the specified delimiter
-    while ((token = strtok_r(rest, &delimiter, &rest)) != NULL) {
+    for (token = strtok_r(rest, &delimiter, &rest); token != NULL; token = strtok_r(NULL, &delimiter, &rest)) {
         int num = atoi(token);
         if (num <= 1000) {
             *sum += num;
