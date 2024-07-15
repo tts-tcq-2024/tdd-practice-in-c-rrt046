@@ -12,7 +12,7 @@ bool hasCustomDelimiter(const char* input, char* delimiter);
 
 // Function to add numbers from a string input
 int add(const char* input) {
-    if (input == NULL || strlen(input) == 0)
+    if (input == NULL || *input == '\0')
         return 0;
 
     char delimiter = ',';
@@ -20,7 +20,6 @@ int add(const char* input) {
         input += 3; // Move past the custom delimiter declaration
     }
 
-    // Parse the input string for numbers
     return extractNumbersAndSum(input, delimiter);
 }
 
