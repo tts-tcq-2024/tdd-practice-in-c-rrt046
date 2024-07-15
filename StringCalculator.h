@@ -6,7 +6,7 @@
 int add(const char *input);
 char parse_delimiter(const char *input);
 void parse_numbers(const char *input, char delimiter, int *sum);
-void handle_negatives(const char *input);
+void process_tokens(char *rest, char delimiter, int *sum);
 
 // Function to add numbers as per StringCalculator requirements
 int add(const char *input) {
@@ -33,13 +33,22 @@ char parse_delimiter(const char *input) {
 // Function to parse numbers and calculate sum
 void parse_numbers(const char *input, char delimiter, int *sum) {
     char *mutable_input = strdup(input); // Create a mutable copy of input
-    char *token;
     char *rest = mutable_input;
 
     // Skip the optional delimiter definition line if present
     if (strncmp(rest, "//", 2) == 0) {
         strtok_r(rest, "\n", &rest); // Move past the delimiter line
     }
+
+    // Process tokens to calculate sum
+    process_tokens(rest, delimiter, sum);
+
+    free(mutable_input); // Free the dynamically allocated memory
+}
+
+// Function to process tokens and calculate sum
+void process_tokens(char *rest, char delimiter, int *sum) {
+    char *token;
 
     // Tokenize the rest of the string using the specified delimiter
     for (token = strtok_r(rest, &delimiter, &rest); token != NULL; token = strtok_r(NULL, &delimiter, &rest)) {
@@ -48,8 +57,6 @@ void parse_numbers(const char *input, char delimiter, int *sum) {
             *sum += num;
         }
     }
-
-    free(mutable_input); // Free the dynamically allocated memory
 }
 
 // Function to handle negative numbers
