@@ -84,4 +84,5 @@ const char* movePastCustomDelimiter(const char* input) {
 
     return input;
 }
+
 #endif // STRINGCALCULATOR_H
