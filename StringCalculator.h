@@ -70,7 +70,7 @@ static const char* parse_custom_delimiter(const char* numbers, char* delimiters)
 }
 
 // Function to calculate the sum of numbers and handle exceptions
-int Add(const char* numbers) {
+int add(const char* numbers) {
     if (strlen(numbers) == 0) {
         return 0;
     }
