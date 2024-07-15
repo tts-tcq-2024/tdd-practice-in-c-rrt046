@@ -64,7 +64,13 @@ void parse_numbers(const char *input, char delimiter, int *sum) {
 
     rest = mutable_input;
 
-    while ((token = strtok_r(rest, "\n,", &rest)) != NULL) {
+    // Skip the optional delimiter definition line if present
+    if (strncmp(rest, "//", 2) == 0) {
+        strtok_r(rest, "\n", &rest); // Move past the delimiter line
+    }
+
+    // Tokenize the rest of the string using the specified delimiter
+    while ((token = strtok_r(rest, &delimiter, &rest)) != NULL) {
         int num = atoi(token);
         if (num <= 1000) {
             *sum += num;
