@@ -7,29 +7,6 @@
 
 #define MAX_NUMBERS 1000
 
-// Function declaration to allocate memory for tokens array with error checking
-static char** allocate_token_array_with_check() {
-    char** tokens = (char**) malloc(MAX_NUMBERS * sizeof(char*));
-    if (tokens == NULL) {
-        perror("Memory allocation error");
-        exit(1);
-    }
-    return tokens;
-}
-
-// Function declaration to tokenize the string and count tokens internally
-static void tokenize_string_internal(char* str_copy, const char* delimiters, char** tokens, int* count) {
-    char* token = strtok(str_copy, delimiters);
-    int index = 0;
-
-    while (token != NULL) {
-        tokens[index++] = token;
-        token = strtok(NULL, delimiters);
-    }
-
-    *count = index;
-}
-
 // Helper function to throw exceptions for negative numbers
 static void throw_exception(const char* message, const int* negatives, int count) {
     printf("%s ", message);
@@ -56,26 +33,6 @@ static const char* parse_custom_delimiter(const char* numbers, char* delimiters)
     return num_start;
 }
 
-// Function to tokenize the string and count tokens
-static char** tokenize_string(const char* str, const char* delimiters, int* count) {
-    char* str_copy = strdup(str);
-    if (str_copy == NULL) {
-        perror("Memory allocation error");
-        exit(1);
-    }
-
-    char** tokens = allocate_token_array_with_check();
-    if (tokens == NULL) {
-        perror("Memory allocation error");
-        exit(1);
-    }
-
-    tokenize_string_internal(str_copy, delimiters, tokens, count);
-
-    free(str_copy); // Freeing the duplicated string after use
-    return tokens;
-}
-
 // Function to validate if a number is negative
 static int is_negative(int num) {
     return num < 0;
@@ -86,30 +43,17 @@ static int is_within_range(int num) {
     return num <= 1000;
 }
 
-// Function to handle summation and range check
-static int sum_and_check_range(int num, int* sum) {
-    if (is_within_range(num)) {
-        *sum += num;
-        return 1;
-    }
-    return 0;
-}
-
-// Function to handle negative number collection
-static void collect_negatives(int num, int* negatives, int* neg_count) {
-    if (is_negative(num)) {
-        negatives[(*neg_count)++] = num;
-    }
-}
-
 // Function to calculate the sum of numbers from tokens and handle exceptions
 static int calculate_sum_from_tokens(char** tokens, int count, int* negatives, int* neg_count) {
     int sum = 0;
 
     for (int i = 0; i < count; i++) {
         int num = atoi(tokens[i]);
-        collect_negatives(num, negatives, neg_count);
-        sum_and_check_range(num, &sum);
+        if (is_negative(num)) {
+            negatives[(*neg_count)++] = num;
+        } else if (is_within_range(num)) {
+            sum += num;
+        }
     }
 
     return sum;
@@ -128,17 +72,24 @@ int add(const char* numbers) {
         return 0;
     }
 
-    char delimiters[] = ",\n";
+    char delimiters[100] = ",\n";
     const char* num_start = parse_custom_delimiter(numbers, delimiters);
 
-    int count;
     char* num_start_copy = strdup(num_start); // Duplicate string for safe tokenization
     if (num_start_copy == NULL) {
         perror("Memory allocation error");
         exit(1);
     }
 
-    char** tokens = tokenize_string(num_start_copy, delimiters, &count);
+    // Tokenize the string
+    char* token = strtok(num_start_copy, delimiters);
+    char* tokens[MAX_NUMBERS];
+    int count = 0;
+
+    while (token != NULL) {
+        tokens[count++] = token;
+        token = strtok(NULL, delimiters);
+    }
 
     int negatives[MAX_NUMBERS];
     int neg_count = 0;
@@ -147,7 +98,6 @@ int add(const char* numbers) {
 
     handle_negatives(negatives, neg_count);
 
-    free(tokens); // Freeing the allocated memory for tokens
     free(num_start_copy); // Freeing the duplicated string
     return sum;
 }
