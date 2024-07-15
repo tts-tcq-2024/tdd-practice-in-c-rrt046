@@ -17,14 +17,14 @@ static void throw_exception(const char* message, const int* negatives, int count
     exit(1);
 }
 
-// Helper function to split the string by given delimiters
-static char** split_string(const char* str, const char* delimiters, int* count) {
+// Function to split the string by given delimiters and return tokens
+static char** tokenize_string(const char* str, const char* delimiters, int* count) {
     char* str_copy = strdup(str);
     if (str_copy == NULL) {
         perror("Memory allocation error");
         exit(1);
     }
-    
+
     char** tokens = (char**) malloc(MAX_NUMBERS * sizeof(char*));
     if (tokens == NULL) {
         perror("Memory allocation error");
@@ -38,6 +38,7 @@ static char** split_string(const char* str, const char* delimiters, int* count) 
         tokens[index++] = token;
         token = strtok(NULL, delimiters);
     }
+
     *count = index;
     free(str_copy); // Freeing the duplicated string after use
     return tokens;
@@ -69,6 +70,22 @@ static const char* parse_custom_delimiter(const char* numbers, char* delimiters)
     return num_start;
 }
 
+// Function to calculate the sum of numbers from tokens and handle exceptions
+static int calculate_sum_from_tokens(char** tokens, int count, int* negatives, int* neg_count) {
+    int sum = 0;
+
+    for (int i = 0; i < count; i++) {
+        int num = atoi(tokens[i]);
+        if (is_negative(num)) {
+            negatives[(*neg_count)++] = num;
+        } else if (is_within_range(num)) {
+            sum += num;
+        }
+    }
+
+    return sum;
+}
+
 // Function to calculate the sum of numbers and handle exceptions
 int add(const char* numbers) {
     if (strlen(numbers) == 0) {
@@ -79,20 +96,12 @@ int add(const char* numbers) {
     const char* num_start = parse_custom_delimiter(numbers, delimiters);
 
     int count;
-    char** tokens = split_string(num_start, delimiters, &count);
+    char** tokens = tokenize_string(num_start, delimiters, &count);
 
-    int sum = 0;
     int negatives[MAX_NUMBERS];
     int neg_count = 0;
 
-    for (int i = 0; i < count; i++) {
-        int num = atoi(tokens[i]);
-        if (is_negative(num)) {
-            negatives[neg_count++] = num;
-        } else if (is_within_range(num)) {
-            sum += num;
-        }
-    }
+    int sum = calculate_sum_from_tokens(tokens, count, negatives, &neg_count);
 
     if (neg_count > 0) {
         throw_exception("negatives not allowed", negatives, neg_count);
