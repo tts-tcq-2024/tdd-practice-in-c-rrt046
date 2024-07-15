@@ -62,17 +62,24 @@ static int tokenize_string(const char* str, const char* delimiters, char** token
     return count;
 }
 
+// Function to process a single token
+static int process_token(const char* token, int* negatives, int* neg_count) {
+    int num = atoi(token);
+    if (is_negative(num)) {
+        negatives[(*neg_count)++] = num;
+        return 0;
+    } else if (is_within_range(num)) {
+        return num;
+    }
+    return 0;
+}
+
 // Function to process tokens and calculate the sum
 static int process_tokens(char** tokens, int count, int* negatives, int* neg_count) {
     int sum = 0;
 
     for (int i = 0; i < count; i++) {
-        int num = atoi(tokens[i]);
-        if (is_negative(num)) {
-            negatives[(*neg_count)++] = num;
-        } else if (is_within_range(num)) {
-            sum += num;
-        }
+        sum += process_token(tokens[i], negatives, neg_count);
     }
 
     return sum;
