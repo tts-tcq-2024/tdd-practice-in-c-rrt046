@@ -51,14 +51,15 @@ void parse_numbers(const char *input, char delimiter, int *sum) {
 void process_tokens(char *rest, char delimiter, int *sum) {
     char *token;
 
-    // Tokenize the rest of the string using the specified delimiter
-    for (token = strtok_r(rest, &delimiter, &rest); token != NULL; token = strtok_r(NULL, &delimiter, &rest)) {
+    // Tokenize the rest of the string using the specified delimiter(s)
+    for (token = strtok_r(rest, ",\n", &rest); token != NULL; token = strtok_r(NULL, ",\n", &rest)) {
         int num = atoi(token);
         if (num <= 1000) {
             *sum += num;
         }
     }
 }
+
 
 // Function to handle negative numbers
 void handle_negatives(const char *input) {
