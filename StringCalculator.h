@@ -108,6 +108,13 @@ static int calculate_sum_from_tokens(char** tokens, int count, int* negatives, i
     return sum;
 }
 
+// Function to handle exceptions for negative numbers
+static void handle_negatives(int* negatives, int neg_count) {
+    if (neg_count > 0) {
+        throw_exception("negatives not allowed", negatives, neg_count);
+    }
+}
+
 // Function to calculate the sum of numbers and handle exceptions
 int add(const char* numbers) {
     if (strlen(numbers) == 0) {
@@ -124,23 +131,14 @@ int add(const char* numbers) {
         exit(1);
     }
 
-    char** tokens = allocate_token_array_with_check();
-    if (tokens == NULL) {
-        perror("Memory allocation error");
-        free(num_start_copy); // Free the duplicated string on error
-        exit(1);
-    }
-
-    tokenize_string_internal(num_start_copy, delimiters, tokens, &count);
+    char** tokens = tokenize_string(num_start_copy, delimiters, &count);
 
     int negatives[MAX_NUMBERS];
     int neg_count = 0;
 
     int sum = calculate_sum_from_tokens(tokens, count, negatives, &neg_count);
 
-    if (neg_count > 0) {
-        throw_exception("negatives not allowed", negatives, neg_count);
-    }
+    handle_negatives(negatives, neg_count);
 
     free(tokens); // Freeing the allocated memory for tokens
     free(num_start_copy); // Freeing the duplicated string
