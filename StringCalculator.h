@@ -18,9 +18,9 @@ int add(const char* input) {
         return 0;
 
     char delimiter;
-    const char* adjustedInput = determineDelimiterAndMove(input, &delimiter);
+    input = determineDelimiterAndMove(input, &delimiter);
 
-    return extractNumbersAndSum(adjustedInput, delimiter);
+    return extractNumbersAndSum(input, delimiter);
 }
 
 // Helper function to determine the delimiter and adjust the input pointer
@@ -60,7 +60,8 @@ bool hasCustomDelimiter(const char* input, char* delimiter) {
 
 // Helper function to move past the custom delimiter declaration
 const char* movePastCustomDelimiter(const char* input) {
-    return input + 3;
+    input += 3;
+    return input;
 }
 
 #endif // STRINGCALCULATOR_H
