@@ -40,12 +40,21 @@ int extractNumbersAndSum(const char* input, char delimiter) {
     strcpy(buffer, input);
 
     // Use strtok to tokenize by delimiter (',' or custom delimiter)
-    char* token = strtok(buffer, ",\n");
+    char* token = strtok(buffer, ",");
     while (token != NULL) {
+        // Check if token starts with newline
+        if (*token == '\n') {
+            token++;
+        }
+
+        // Convert token to number
         int number = atoi(token);
-        if (number <= 1000)
+        if (number <= 1000) {
             sum += number;
-        token = strtok(NULL, ",\n");
+        }
+
+        // Move to the next token
+        token = strtok(NULL, ",");
     }
 
     return sum;
