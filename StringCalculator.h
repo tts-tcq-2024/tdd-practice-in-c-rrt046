@@ -92,17 +92,30 @@ static int is_within_range(int num) {
     return num <= 1000;
 }
 
+// Function to handle summation and range check
+static int sum_and_check_range(int num, int* sum) {
+    if (is_within_range(num)) {
+        *sum += num;
+        return 1;
+    }
+    return 0;
+}
+
+// Function to handle negative number collection
+static void collect_negatives(int num, int* negatives, int* neg_count) {
+    if (is_negative(num)) {
+        negatives[(*neg_count)++] = num;
+    }
+}
+
 // Function to calculate the sum of numbers from tokens and handle exceptions
 static int calculate_sum_from_tokens(char** tokens, int count, int* negatives, int* neg_count) {
     int sum = 0;
 
     for (int i = 0; i < count; i++) {
         int num = atoi(tokens[i]);
-        if (is_negative(num)) {
-            negatives[(*neg_count)++] = num;
-        } else if (is_within_range(num)) {
-            sum += num;
-        }
+        collect_negatives(num, negatives, neg_count);
+        sum_and_check_range(num, &sum);
     }
 
     return sum;
