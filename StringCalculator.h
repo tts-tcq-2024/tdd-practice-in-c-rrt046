@@ -38,13 +38,13 @@ int extractNumbersAndSum(const char* input, char delimiter) {
     char buffer[strlen(input) + 1];
     strcpy(buffer, input);
 
-    // Tokenize using ',' and '\n' as delimiters
-    char* token = strtok(buffer, ",\n");
+    // Tokenize using the custom delimiter
+    char* token = strtok(buffer, &delimiter);
     while (token != NULL) {
         int number = atoi(token);
         if (number <= 1000)
             sum += number;
-        token = strtok(NULL, ",\n");
+        token = strtok(NULL, &delimiter);
     }
 
     return sum;
@@ -61,7 +61,20 @@ bool hasCustomDelimiter(const char* input, char* delimiter) {
 
 // Helper function to move past the custom delimiter declaration
 const char* movePastCustomDelimiter(const char* input) {
-    return input + 3;
+    // Move past '//'
+    input += 2;
+
+    // Move past the custom delimiter
+    while (*input != '\n' && *input != '\0') {
+        input++;
+    }
+
+    // Move past newline character if it exists
+    if (*input == '\n') {
+        input++;
+    }
+
+    return input;
 }
 
 #endif // STRINGCALCULATOR_H
