@@ -9,6 +9,7 @@
 int add(const char* input);
 int extractNumbersAndSum(const char* input, char delimiter);
 bool hasCustomDelimiter(const char* input, char* delimiter);
+const char* movePastCustomDelimiter(const char* input);
 
 // Function to add numbers from a string input
 int add(const char* input) {
@@ -17,7 +18,7 @@ int add(const char* input) {
 
     char delimiter = ',';
     if (hasCustomDelimiter(input, &delimiter)) {
-        input += 3; // Move past the custom delimiter declaration
+        input = movePastCustomDelimiter(input);
     }
 
     return extractNumbersAndSum(input, delimiter);
@@ -47,6 +48,11 @@ bool hasCustomDelimiter(const char* input, char* delimiter) {
         return true;
     }
     return false;
+}
+
+// Helper function to move past the custom delimiter declaration
+const char* movePastCustomDelimiter(const char* input) {
+    return input + 3;
 }
 
 #endif // STRINGCALCULATOR_H
