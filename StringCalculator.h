@@ -41,12 +41,12 @@ int extractNumbersAndSum(const char* input, char delimiter) {
     strcpy(buffer, input);
 
     // Use strtok to tokenize by delimiter
-    char* token = strtok(buffer, &delimiter);
+    char* token = strtok(buffer, ",\n");
     while (token != NULL) {
         int number = atoi(token);
         if (number <= 1000)
             sum += number;
-        token = strtok(NULL, &delimiter);
+        token = strtok(NULL, ",\n");
     }
 
     return sum;
@@ -66,28 +66,16 @@ const char* movePastCustomDelimiter(const char* input) {
     // Move past '//'
     input += 2;
 
-    // Skip until newline or end of string
-    input = skipUntilNewlineOrEnd(input);
-
-    // Move past newline character if it exists
-    input = skipNewline(input);
-
-    return input;
-}
-
-// Helper function to skip until newline or end of string
-const char* skipUntilNewlineOrEnd(const char* input) {
+    // Move past the custom delimiter
     while (*input != '\n' && *input != '\0') {
         input++;
     }
-    return input;
-}
 
-// Helper function to skip newline character if it exists
-const char* skipNewline(const char* input) {
+    // Move past newline character if it exists
     if (*input == '\n') {
         input++;
     }
+
     return input;
 }
 
