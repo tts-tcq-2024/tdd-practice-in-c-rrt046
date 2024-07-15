@@ -43,7 +43,10 @@ int extractNumbersAndSum(const char* input, char delimiter) {
     // Use strtok to tokenize by delimiter (',' or custom delimiter)
     char* token = strtok(buffer, ",");
     while (token != NULL) {
-        sum += parseToken(token, delimiter);
+        int number = parseToken(token, delimiter);
+        if (number <= 1000) {
+            sum += number;
+        }
         token = strtok(NULL, ",");
     }
 
@@ -81,7 +84,7 @@ const char* movePastCustomDelimiter(const char* input) {
     input += 2;
 
     // Move past the custom delimiter declaration and newline character
-    input=skipNewline(input);
+   input=skipNewline(input);
 
     // Move past newline character if it exists
     if (*input == '\n') {
