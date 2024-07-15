@@ -25,7 +25,7 @@ static char** tokenize_string(const char* str, const char* delimiters, int* coun
         exit(1);
     }
 
-    char** tokens = (char**) malloc(MAX_NUMBERS * sizeof(char*));
+    char** tokens = allocate_token_array_with_check();
     if (tokens == NULL) {
         perror("Memory allocation error");
         exit(1);
@@ -41,6 +41,16 @@ static char** tokenize_string(const char* str, const char* delimiters, int* coun
 
     *count = index;
     free(str_copy); // Freeing the duplicated string after use
+    return tokens;
+}
+
+// Function to allocate memory for tokens array with error checking
+static char** allocate_token_array_with_check() {
+    char** tokens = (char**) malloc(MAX_NUMBERS * sizeof(char*));
+    if (tokens == NULL) {
+        perror("Memory allocation error");
+        exit(1);
+    }
     return tokens;
 }
 
@@ -70,6 +80,26 @@ static const char* parse_custom_delimiter(const char* numbers, char* delimiters)
     return num_start;
 }
 
+// Function to tokenize the string and count tokens
+static void tokenize_and_count_tokens(const char* str, const char* delimiters, char** tokens, int* count) {
+    char* str_copy = strdup(str);
+    if (str_copy == NULL) {
+        perror("Memory allocation error");
+        exit(1);
+    }
+
+    char* token = strtok(str_copy, delimiters);
+    int index = 0;
+
+    while (token != NULL) {
+        tokens[index++] = token;
+        token = strtok(NULL, delimiters);
+    }
+
+    *count = index;
+    free(str_copy); // Freeing the duplicated string after use
+}
+
 // Function to calculate the sum of numbers from tokens and handle exceptions
 static int calculate_sum_from_tokens(char** tokens, int count, int* negatives, int* neg_count) {
     int sum = 0;
@@ -96,7 +126,13 @@ int add(const char* numbers) {
     const char* num_start = parse_custom_delimiter(numbers, delimiters);
 
     int count;
-    char** tokens = tokenize_string(num_start, delimiters, &count);
+    char** tokens = allocate_token_array_with_check();
+    if (tokens == NULL) {
+        perror("Memory allocation error");
+        exit(1);
+    }
+
+    tokenize_and_count_tokens(num_start, delimiters, tokens, &count);
 
     int negatives[MAX_NUMBERS];
     int neg_count = 0;
