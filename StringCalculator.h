@@ -106,7 +106,7 @@ static int calculate_sum_from_tokens(char** tokens, int count, int* negatives, i
 }
 
 // Function to calculate the sum of numbers and handle exceptions
-int Add(const char* numbers) {
+int add(const char* numbers) {
     if (strlen(numbers) == 0) {
         return 0;
     }
