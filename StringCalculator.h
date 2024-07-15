@@ -8,7 +8,7 @@
 // Function declarations
 int add(const char* input);
 const char* determineDelimiterAndMove(const char* input, char* delimiter);
-int extractNumbersAndSum(const char* input, char delimiter);
+int extractNumbersAndSum(const char* input, char* delimiter);
 bool hasCustomDelimiter(const char* input, char* delimiter);
 const char* movePastCustomDelimiter(const char* input);
 
@@ -38,12 +38,13 @@ int extractNumbersAndSum(const char* input, char delimiter) {
     char buffer[strlen(input) + 1];
     strcpy(buffer, input);
 
-    char* token = strtok(buffer, &delimiter);
+    // Use strtok to tokenize by both ',' and '\n'
+    char* token = strtok(buffer, ",\n");
     while (token != NULL) {
         int number = atoi(token);
         if (number <= 1000)
             sum += number;
-        token = strtok(NULL, &delimiter);
+        token = strtok(NULL, ",\n");
     }
 
     return sum;
