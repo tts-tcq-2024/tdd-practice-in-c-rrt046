@@ -16,9 +16,11 @@ int add(const char* input) {
         return 0;
 
     char delimiter = ',';
-    if (hasCustomDelimiter(input, &delimiter))
+    if (hasCustomDelimiter(input, &delimiter)) {
         input += 3; // Move past the custom delimiter declaration
+    }
 
+    // Parse the input string for numbers
     return extractNumbersAndSum(input, delimiter);
 }
 
